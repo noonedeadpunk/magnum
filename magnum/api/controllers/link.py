@@ -14,6 +14,7 @@
 #    under the License.
 
 import pecan
+from urllib.parse import urljoin
 from wsme import types as wtypes
 
 from magnum.api.controllers import base
@@ -21,14 +22,22 @@ from magnum.api.controllers import base
 
 def build_url(resource, resource_args, bookmark=False, base_url=None):
     if base_url is None:
-        base_url = pecan.request.host_url
+        base_url = urljoin(pecan.request.host_url, pecan.request.path)
 
-    template = '%(url)s/%(res)s' if bookmark else '%(url)s/v1/%(res)s'
+    if bookmark:
+        url = urljoin(base_url, resource)
+    else:
+        url = urljoin(base_url, 'v1/%s' % resource)
+
     # FIXME(lucasagomes): I'm getting a 404 when doing a GET on
     # a nested resource that the URL ends with a  '/'.
     # https://groups.google.com/forum/#!topic/pecan-dev/QfSeviLg5qs
-    template += '%(args)s' if resource_args.startswith('?') else '/%(args)s'
-    return template % {'url': base_url, 'res': resource, 'args': resource_args}
+    if resource_args.startswith('?'):
+         url += resource_args
+    else:
+        url = urljoin(url, resource_args)
+
+    return url
 
 
 class Link(base.APIBase):

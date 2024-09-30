@@ -14,6 +14,7 @@
 
 import pecan
 from pecan import rest
+from urllib.parse import urljoin
 from wsme import types as wtypes
 
 from magnum.api.controllers import base
@@ -43,9 +44,10 @@ class Version(base.APIBase):
 
     @staticmethod
     def convert(id, status, max, min):
+        url = urljoin(pecan.request.host_url, pecan.request.path)
         version = Version()
         version.id = id
-        version.links = [link.Link.make_link('self', pecan.request.host_url,
+        version.links = [link.Link.make_link('self', url,
                                              id, '', bookmark=True)]
         version.status = status
         version.max_version = max

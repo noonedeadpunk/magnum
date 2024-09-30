@@ -20,6 +20,7 @@ NOTE: IN PROGRESS AND NOT FULLY IMPLEMENTED.
 
 from oslo_log import log as logging
 import pecan
+from urllib.parse import urljoin
 from wsme import types as wtypes
 
 from magnum.api.controllers import base as controllers_base
@@ -102,7 +103,9 @@ class V1(controllers_base.APIBase):
     def convert():
         v1 = V1()
         v1.id = "v1"
-        v1.links = [link.Link.make_link('self', pecan.request.host_url,
+        url_path = pecan.request.path.split(v1.id)
+        url = urljoin(pecan.request.host_url, url_path[0])
+        v1.links = [link.Link.make_link('self', url,
                                         'v1', '', bookmark=True),
                     link.Link.make_link('describedby',
                                         'http://docs.openstack.org',
@@ -112,53 +115,53 @@ class V1(controllers_base.APIBase):
         v1.media_types = [MediaType('application/json',
                           'application/vnd.openstack.magnum.v1+json')]
         v1.clustertemplates = [link.Link.make_link('self',
-                                                   pecan.request.host_url,
+                                                   url,
                                                    'clustertemplates', ''),
                                link.Link.make_link('bookmark',
-                                                   pecan.request.host_url,
+                                                   url,
                                                    'clustertemplates', '',
                                                    bookmark=True)]
-        v1.clusters = [link.Link.make_link('self', pecan.request.host_url,
+        v1.clusters = [link.Link.make_link('self', url,
                                            'clusters', ''),
                        link.Link.make_link('bookmark',
-                                           pecan.request.host_url,
+                                           url,
                                            'clusters', '',
                                            bookmark=True)]
-        v1.quotas = [link.Link.make_link('self', pecan.request.host_url,
+        v1.quotas = [link.Link.make_link('self', url,
                                          'quotas', ''),
                      link.Link.make_link('bookmark',
-                                         pecan.request.host_url,
+                                         url,
                                          'quotas', '',
                                          bookmark=True)]
-        v1.certificates = [link.Link.make_link('self', pecan.request.host_url,
+        v1.certificates = [link.Link.make_link('self', url,
                                                'certificates', ''),
                            link.Link.make_link('bookmark',
-                                               pecan.request.host_url,
+                                               url,
                                                'certificates', '',
                                                bookmark=True)]
-        v1.mservices = [link.Link.make_link('self', pecan.request.host_url,
+        v1.mservices = [link.Link.make_link('self', url,
                                             'mservices', ''),
                         link.Link.make_link('bookmark',
-                                            pecan.request.host_url,
+                                            url,
                                             'mservices', '',
                                             bookmark=True)]
-        v1.stats = [link.Link.make_link('self', pecan.request.host_url,
+        v1.stats = [link.Link.make_link('self', url,
                                         'stats', ''),
                     link.Link.make_link('bookmark',
-                                        pecan.request.host_url,
+                                        url,
                                         'stats', '',
                                         bookmark=True)]
-        v1.federations = [link.Link.make_link('self', pecan.request.host_url,
+        v1.federations = [link.Link.make_link('self', url,
                                               'federations', ''),
                           link.Link.make_link('bookmark',
-                                              pecan.request.host_url,
+                                              url,
                                               'federations', '',
                                               bookmark=True)]
-        v1.nodegroups = [link.Link.make_link('self', pecan.request.host_url,
+        v1.nodegroups = [link.Link.make_link('self', url,
                                              'clusters/{cluster_id}',
                                              'nodegroups'),
                          link.Link.make_link('bookmark',
-                                             pecan.request.host_url,
+                                             url,
                                              'clusters/{cluster_id}',
                                              'nodegroups',
                                              bookmark=True)]
